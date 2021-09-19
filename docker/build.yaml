@@ -1,0 +1,31 @@
+##----------------------------------------------
+## Microservices Docker Image pipeline
+##----------------------------------------------
+---
+# In order to preserve SHA between builds, we use DinD
+include:
+  - project: 'training/pipeline'
+    ref: master
+    file: 'variables.yaml'
+
+services:
+  - name: docker:20.10-dind
+    command: ["--mtu=1450"]
+
+# Build and push the image with the specified tag
+.build:
+  image: docker:20.10
+  before_script:
+    - until docker info; do sleep 2; done
+  script: |-
+    set -eu pipefail;
+    export TAG=$(cat ./tag);
+    docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD https://gitlab.com/training-gitops/microservices/microservices-demo/
+    docker build \
+      --network host \
+      -f ./microservices-demo/src/$SERVICE.Dockerfile \
+      -t tty0/microservices/$IMAGE:$TAG .
+    echo "=> Pushing image sir/sir-microservicios/$IMAGE:$TAG (latest) to "
+    #docker push $git_registry/sir/sir-microservicios/$IMAGE:$TAG
+    #docker push $git_registry/sir/sir-microservicios/$IMAGE:latest
+    echo "=> Done"
