@@ -4,7 +4,7 @@
 ## Each branch has a number
 ##  - develop: 1
 ##  - RC: 2
-##  - master: 3
+##  - main: 3
 ## We check for the source branch in order to assign them and ID.
 ## Once we know the ID we can use this value as part of the tag.
 ## We need to export the given tag as an artifact to be picked

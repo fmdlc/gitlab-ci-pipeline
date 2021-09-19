@@ -5,8 +5,8 @@
 ## Used to unencrypt SOPS secrets.
 ---
 include:
-  - project: 'training/pipeline'
-    ref: master
+  - project: 'training-gitops/pipeline'
+    ref: main
     file: 'variables.yaml'
 
 #.import-key:
