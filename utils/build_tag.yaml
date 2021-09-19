@@ -23,7 +23,7 @@
       - git config --global user.name "GitLab CI"
     script: |-
       # Define starting branchID
-      branch=0
+      branch=1
       echo "******************************************************"
       echo "CI_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME"
       echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
@@ -31,7 +31,7 @@
       echo "******************************************************"
 
       # Get tags according to source branch
-      tagList=$(git tag -l "2*\.$branch\.*" | sort -V -r)
+      tagList=$(git tag -l "0*\.$branch\.*" | sort -V -r)
 
       # Create a tags array to fetch the latest one
       IFS=' ' read -ra lastTagValues <<< "$tagList"
@@ -47,7 +47,7 @@
         buildCount=$((lastBuild+1));
       fi
 
-      tag="2.$RCVersion.$branch.$buildCount"
+      tag="1.$RCVersion.$branch.$buildCount"
 
       echo "lastBuild: $lastBuild"
       echo "RCVersion: $RCVersion"
