@@ -32,22 +32,30 @@
 
       # Get tags according to source branch
       tagList=$(git tag -l "0*\.$branch\.*" | sort -V -r)
-
+      echo $tagList
+      
       # Create a tags array to fetch the latest one
       IFS=' ' read -ra lastTagValues <<< "$tagList"
+      echo $IFS
       lastTag="${lastTagValues[0]}"
+      echo $lastTag
 
       # Create another array to fetch last digits
       IFS='.' read -ra lastTagDigits <<< "$lastTag"
+      echo $IFS
       tagDigits=("${lastTagDigits[@]}")
+      echo $tagDigits
       lastRC=${tagDigits[1]}
+      echo $lastRC
       lastBuild=${tagDigits[3]}
+      echo $lastBuild
 
       if [ "$lastRC" == "$RCVersion" ]; then
         buildCount=$((lastBuild+1));
       fi
 
       tag="0.$RCVersion.$buildCount"
+      tag="0.1.0-CI_COMMIT_SHORT_SHA"
 
       echo "lastBuild: $lastBuild"
       echo "RCVersion: $RCVersion"
