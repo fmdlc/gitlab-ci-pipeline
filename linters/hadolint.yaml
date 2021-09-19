@@ -2,11 +2,6 @@
 ## Microservices Docker Image pipeline
 ##----------------------------------------------
 ---
-include:
-  - project: 'training-gitops/pipeline'
-    ref: main
-    file: 'variables.yaml'
-
 .docker_lint:
   image: hadolint/hadolint:latest-debian
   allow_failure: true
