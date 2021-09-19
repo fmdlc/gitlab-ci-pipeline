@@ -7,7 +7,7 @@
   allow_failure: true
   script: |
     set -eu pipefail;
-    find . -type f -iname Dockerfile | xargs hadolint $DOCKER_LINT_IGNORE;
+    find . -type f -iname Dockerfile | xargs hadolint $DOCKER_LINT_IGNORE || true;
   rules:
     - if: $CI_MERGE_REQUEST_EVENT_TYPE == "detached"
       when: never
