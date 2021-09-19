@@ -47,7 +47,7 @@
         buildCount=$((lastBuild+1));
       fi
 
-      tag="1.$RCVersion.$branch.$buildCount"
+      tag="0.$RCVersion.$buildCount"
 
       echo "lastBuild: $lastBuild"
       echo "RCVersion: $RCVersion"
