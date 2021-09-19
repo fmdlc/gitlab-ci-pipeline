@@ -4,7 +4,7 @@
 ---
 # In order to preserve SHA between builds, we use DinD
 include:
-  - project: 'training/pipeline'
+  - project: 'training-gitops/pipeline'
     ref: main
     file: 'variables.yaml'
 
