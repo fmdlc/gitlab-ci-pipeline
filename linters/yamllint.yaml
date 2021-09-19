@@ -1,0 +1,10 @@
+##----------------------------------------------
+## Lint YAML Files
+##----------------------------------------------
+---
+.yamllint:
+  image: python:3.7-alpine
+  stage: lint
+  script:
+    - pip install yamllint
+    - yamllint ${YAMLLINT_OPTIONS} *.yaml

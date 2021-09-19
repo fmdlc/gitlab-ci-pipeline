@@ -1,0 +1,14 @@
+##----------------------------------------------
+## Microservices Docker Image pipeline
+##----------------------------------------------
+---
+.docker_lint:
+  image: hadolint/hadolint:latest-debian
+  allow_failure: true
+  script: |
+    set -eu pipefail;
+    find . -type f -iname '*.Dockerfile' | xargs hadolint $DOCKER_LINT_IGNORE;
+  rules:
+    - if: $CI_MERGE_REQUEST_EVENT_TYPE == "detached"
+      when: never
+    - when: always

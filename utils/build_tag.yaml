@@ -1,0 +1,74 @@
+##----------------------------------------------
+## Build Git Tag for SIR Microservices
+##----------------------------------------------
+## Each branch has a number
+##  - develop: 1
+##  - RC: 2
+##  - master: 3
+## We check for the source branch in order to assign them and ID.
+## Once we know the ID we can use this value as part of the tag.
+## We need to export the given tag as an artifact to be picked
+## by the next comming job and used to tag the Docker image before pushing.
+
+.build_tag:
+    image: ubuntu:latest
+    allow_failure: false
+    artifacts:
+      paths:
+        - tag
+    before_script:
+      - apt-get update
+      - apt-get --no-install-recommends install -y git ca-certificates
+      - git config --global user.email "fmdlc.unix@gmail.com"
+      - git config --global user.name "GitLab CI"
+    script: |-
+      # Define starting branchID
+      branch=0
+      echo "******************************************************"
+      echo "CI_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME"
+      echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
+      echo "CI_COMMIAT_SHORT_SHA: $CI_COMMIT_SHORT_SHA"
+      echo "******************************************************"
+
+      # Get tags according to source branch
+      tagList=$(git tag -l "2*\.$branch\.*" | sort -V -r)
+
+      # Create a tags array to fetch the latest one
+      IFS=' ' read -ra lastTagValues <<< "$tagList"
+      lastTag="${lastTagValues[0]}"
+
+      # Create another array to fetch last digits
+      IFS='.' read -ra lastTagDigits <<< "$lastTag"
+      tagDigits=("${lastTagDigits[@]}")
+      lastRC=${tagDigits[1]}
+      lastBuild=${tagDigits[3]}
+
+      if [ "$lastRC" == "$RCVersion" ]; then
+        buildCount=$((lastBuild+1));
+      fi
+
+      tag="2.$RCVersion.$branch.$buildCount"
+
+      echo "lastBuild: $lastBuild"
+      echo "RCVersion: $RCVersion"
+      echo "branch: $branch"
+      echo "buildCount: $buildCount"
+      echo "tag: $tag"
+      echo "******************************************************"
+
+      # We need to share the tag as artifact between stages.
+      echo $tag > tag
+
+      # Finally we push tags to GitLab if it isnt a MR
+      if [ $CI_PIPELINE_SOURCE == "merge_request_event" ]; then
+        echo "Skipping pushing tag ($tag) on MergeRequest."
+      else
+        git tag -a $tag -m $tag
+        git push $gitpush --tags
+        echo "Tag: $tag pushed."
+      fi
+    rules:
+      - if: $CI_MERGE_REQUEST_EVENT_TYPE =="detached"
+        when: never
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      - when: always

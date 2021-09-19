@@ -1,0 +1,13 @@
+##----------------------------------------------
+## This template contains all environments where
+## different microservices can be deployed.
+##----------------------------------------------
+## Normally one environment means one cluster
+## tags specifies the runner where jobs will run.
+---
+## test cluster
+.env-training:
+  variables:
+    ENV: training
+  tags:
+    - training

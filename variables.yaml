@@ -1,0 +1,15 @@
+##----------------------------------------------
+## Shared variables
+##----------------------------------------------
+---
+variables:
+  # Imaged used to deploy infra services
+  DOCKER_HOST: tcp://127.0.0.1:2376
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_CERT_PATH: "/certs/client"
+  DOCKER_LINT_IGNORE: "--ignore DL3013 --ignore DL3018 --ignore DL3000 --ignore DL3059"
+  GITLAB_URI: https://gitlab.com/training-gitops/"
+  GIT_STRATEGY: fetch
+  YAMLLINT_OPTIONS: ""
