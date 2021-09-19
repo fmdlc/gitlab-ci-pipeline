@@ -6,7 +6,7 @@
 ---
 include:
   - project: 'training/pipeline'
-    ref: master
+    ref: main
     file: 'variables.yaml'
 
 #.import-key:
