@@ -31,3 +31,7 @@ services:
     docker push registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:$TAG
     docker push registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:latest
     echo "=> Done"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - when: always
