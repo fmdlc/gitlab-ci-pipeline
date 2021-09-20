@@ -25,8 +25,8 @@ services:
     docker build \
       --network host \
       -t registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:$TAG \
-      -t regisrty.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:latest .
+      -t registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:latest .
     echo "=> Pushing image $IMAGE:$TAG (latest)"
     docker push registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:$TAG
-    docker push regisrty.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:latest
+    docker push registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:latest
     echo "=> Done"
