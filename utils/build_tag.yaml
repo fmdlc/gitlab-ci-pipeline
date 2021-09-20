@@ -28,9 +28,10 @@
       echo "CI_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME"
       echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
       echo "CI_COMMIAT_SHORT_SHA: $CI_COMMIT_SHORT_SHA"
+      echo "CI_JOB_ID: $CI_JOB_ID"
       echo "******************************************************"
 
-      tag="0.1.0-$CI_COMMIT_SHORT_SHA"
+      tag="0.1.0-$CI_JOB_ID"
       echo "tag: $tag"
       echo "******************************************************"
 
