@@ -23,9 +23,9 @@ services:
     docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD https://gitlab.com/training-gitops/microservices/microservices-demo/
     docker build \
       --network host \
-      -f ./microservices-demo/src/$SERVICE.Dockerfile \
-      -t tty0/microservices/$IMAGE:$TAG .
-    echo "=> Pushing image sir/sir-microservicios/$IMAGE:$TAG (latest) to "
-    #docker push $git_registry/sir/sir-microservicios/$IMAGE:$TAG
-    #docker push $git_registry/sir/sir-microservicios/$IMAGE:latest
+      -f ./src/$SERVICE/Dockerfile \
+      -t gitlab.com/gitops-training/microservices/$IMAGE:$TAG .
+    echo "=> Pushing image $IMAGE:$TAG (latest)"
+    docker push gitlab.com/gitops-training/microservices/$IMAGE:$TAG
+    docker push gitlab.com/gitops-training/microservices/$IMAGE:latest
     echo "=> Done"
