@@ -21,10 +21,12 @@ services:
     set -eu pipefail;
     export TAG=$(cat ./tag);
     docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.gitlab.com
+    cd $DOCKER_CONTEXT
     docker build \
       --network host \
-      -f ./src/$SERVICE/Dockerfile \
-      -t registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:$TAG ./src/$SERVICE/
+      -t registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:$TAG \
+      -t regisrty.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:latest .
     echo "=> Pushing image $IMAGE:$TAG (latest)"
     docker push registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:$TAG
+    docker push registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:latest
     echo "=> Done"
