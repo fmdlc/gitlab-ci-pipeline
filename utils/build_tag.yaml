@@ -47,7 +47,7 @@
         echo "Tag: $tag pushed."
       fi
     rules:
-      - if: $CI_MERGE_REQUEST_EVENT_TYPE =="detached"
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
         when: never
-      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       - when: always
+
