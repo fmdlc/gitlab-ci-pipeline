@@ -19,7 +19,6 @@ services:
     - until docker info; do sleep 2; done
   script: |-
     set -eu pipefail;
-    docker push registry.gitlab.com/training-gitops/microservices/microservices-demo
     export TAG=$(cat ./tag);
     docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.gitlab.com
     docker build \
