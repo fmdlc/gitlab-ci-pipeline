@@ -42,7 +42,7 @@
         echo "Skipping pushing tag ($tag) on MergeRequest."
       else
         git tag -a $tag -m $tag
-        git push $GIT_PUSH --tags
+        git push $GIT_PUSH --tags -f
         echo "Tag: $tag pushed."
       fi
     rules:
