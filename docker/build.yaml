@@ -22,7 +22,7 @@ services:
     export TAG=$(cat ./tag);
     docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.gitlab.com
     cd $DOCKER_CONTEXT
-    echo "Current context is: $(PWD)"
+    echo "Current context is: $(pwd)"
     docker build \
       --network host \
       -t registry.gitlab.com/training-gitops/microservices/microservices-demo/$IMAGE:$TAG \
