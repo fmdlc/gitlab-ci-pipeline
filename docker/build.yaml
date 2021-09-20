@@ -24,7 +24,7 @@ services:
     docker build \
       --network host \
       -f ./src/$SERVICE/Dockerfile \
-      -t gitlab.com/gitops-training/microservices/$IMAGE:$TAG .
+      -t gitlab.com/gitops-training/microservices/$IMAGE:$TAG ./src/$SERVICE/
     echo "=> Pushing image $IMAGE:$TAG (latest)"
     docker push gitlab.com/gitops-training/microservices/$IMAGE:$TAG
     docker push gitlab.com/gitops-training/microservices/$IMAGE:latest
