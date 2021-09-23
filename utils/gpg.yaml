@@ -9,7 +9,7 @@ include:
     ref: main
     file: 'variables.yaml'
 
-.import-key:
+import-key:
   allow_failure: false
   stage: import-key
   script:
