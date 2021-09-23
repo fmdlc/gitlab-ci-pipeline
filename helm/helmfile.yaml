@@ -23,7 +23,7 @@ variables:
 
 .helm-diff:
   image: $INFRA_IMAGE
-  allow_failure: true
+  allow_failure: false
   stage: helm-diff
   script: |-
     echo $GPG_PRIVATE_KEY | base64 -d | gpg --import
@@ -32,6 +32,7 @@ variables:
 
 .helm-sync:
   image: $INFRA_IMAGE
+  allow_failure: false
   stage: helm-sync
   script:
     - echo $GPG_PRIVATE_KEY | base64 -d | gpg --import
