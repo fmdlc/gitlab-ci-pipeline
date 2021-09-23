@@ -4,10 +4,10 @@
 ## Imports GPG key into the GPG keychain
 ## Used to unencrypt SOPS secrets.
 ---
-#include:
-#  - project: 'training-gitops/pipeline'
-#    ref: main
-#    file: 'variables.yaml'
+include:
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'variables.yaml'
 
 #import-key:
 #  allow_failure: false
