@@ -37,7 +37,7 @@ helm-diff-prod:
   extends:
     - .helm-diff
     - .env-gitops-prod
-  stage: prod-diff
+  stage: helm-diff
   environment:
     name: "gitops-prod"
 
