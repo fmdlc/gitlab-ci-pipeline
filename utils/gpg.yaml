@@ -4,13 +4,13 @@
 ## Imports GPG key into the GPG keychain
 ## Used to unencrypt SOPS secrets.
 ---
-include:
-  - project: 'training-gitops/pipeline'
-    ref: main
-    file: 'variables.yaml'
+#include:
+#  - project: 'training-gitops/pipeline'
+#    ref: main
+#    file: 'variables.yaml'
 
-import-key:
-  allow_failure: false
-  stage: import-key
-  script:
-    - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
+#import-key:
+#  allow_failure: false
+#  stage: import-key
+# script:
+#   - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
