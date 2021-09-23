@@ -24,7 +24,7 @@ variables:
   image: $INFRA_IMAGE
   allow_failure: true
   stage: helm-diff
-  exteds:
+  extends:
     - .import-key
   script: |-
     helmfile diff --suppress-secrets
