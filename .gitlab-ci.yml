@@ -1,0 +1,11 @@
+include:
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'linters/yamllint.yaml'
+
+stages:
+  - yamllint
+
+yamllint:
+  stage: yamllint
+  extends: .yamllint
