@@ -15,6 +15,7 @@ include:
 
 stages:
   - yaml-lint
+  - helm-lint
   - helm-diff
   - helm-sync
 
@@ -33,6 +34,14 @@ yaml-lint:
 ##-------------------------
 ## prod environment
 ##-------------------------
+helm-lint-prod:
+  extends:
+    - .helm-lint
+    - .env-gitops-prod
+  stage: helm-lint
+  environment:
+    name: "gitops-prod"
+
 helm-diff-prod:
   extends:
     - .helm-diff
@@ -56,6 +65,14 @@ helm-sync-prod:
 ##-------------------------
 ## dev environment
 ##-------------------------
+helm-lint-dev:
+  extends:
+    - .helm-lint
+    - .env-gitops-dev
+  stage: helm-lint
+  environment:
+    name: "gitops-dev"
+
 helm-diff-dev:
   extends:
     - .helm-diff
