@@ -1,0 +1,36 @@
+##----------------------------------------------
+## Hemfile pipeline
+##----------------------------------------------
+---
+include:
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'utils/gpg.yaml'
+
+variables:
+  ENV: $ENVIRONMENT
+  PROJECT_NAME: ${CI_PROJECT_NAME}
+
+.helm-lint:
+  image: $INFRA_IMAGE
+  allow_failure: true
+  stage: helm-lint
+  script:
+    - base64 -d $GPG_PRIVATE_KEY | gpg --import
+    - helmfile lint
+
+.helm-diff:
+  image: $INFRA_IMAGE
+  allow_failure: true
+  stage: helm-diff
+  script: |-
+    base64 -d $GPG_PRIVATE_KEY | gpg --import
+    helmfile diff --suppress-secrets
+    echo "ENVIRONMENT: $ENV - NAMESPACE: $KUBE_NAMESPACE"
+
+.helm-sync:
+  image: $INFRA_IMAGE
+  stage: helm-sync
+  script:
+    - base64 -d $GPG_PRIVATE_KEY | gpg --import
+    - helmfile sync
