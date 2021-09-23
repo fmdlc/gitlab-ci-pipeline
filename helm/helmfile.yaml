@@ -18,6 +18,7 @@ variables:
   extends: 
     - .import-key
   script:
+    - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
     - helmfile lint
 
 .helm-diff:
@@ -27,6 +28,7 @@ variables:
   extends:
     - .import-key
   script: |-
+    echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
     helmfile diff --suppress-secrets
     echo "ENVIRONMENT: $ENV - NAMESPACE: $KUBE_NAMESPACE"
 
@@ -36,4 +38,5 @@ variables:
   extends: 
     - .import-key
   script:
+    - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
     - helmfile sync
