@@ -13,4 +13,4 @@ include:
   image: $INFRA_IMAGE
   stage: import-key
   script:
-    - base64 -d $GPG_PRIVATE_KEY | gpg --import
+    - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
