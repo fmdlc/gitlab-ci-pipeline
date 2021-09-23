@@ -11,6 +11,5 @@ include:
 
 import-key:
   allow_failure: false
-  stage: import-key
   script:
     - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
