@@ -10,6 +10,7 @@ include:
     file: 'variables.yaml'
 
 .import-key:
+  allow_failure: false
   image: $INFRA_IMAGE
   stage: import-key
   script:
