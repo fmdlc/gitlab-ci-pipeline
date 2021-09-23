@@ -15,8 +15,6 @@ variables:
   image: $INFRA_IMAGE
   allow_failure: true
   stage: helm-lint
-  extends: 
-    - import-key
   script:
     - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
     - helmfile lint
@@ -25,8 +23,6 @@ variables:
   image: $INFRA_IMAGE
   allow_failure: true
   stage: helm-diff
-  extends:
-    - import-key
   script: |-
     echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
     helmfile diff --suppress-secrets
@@ -35,8 +31,6 @@ variables:
 .helm-sync:
   image: $INFRA_IMAGE
   stage: helm-sync
-  extends: 
-    - import-key
   script:
     - echo -n $GPG_PRIVATE_KEY | base64 -d | gpg --import
     - helmfile sync
