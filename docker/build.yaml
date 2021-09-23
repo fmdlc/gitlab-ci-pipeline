@@ -21,7 +21,7 @@ services:
     set -eu pipefail;
     export TAG=$(cat ./tag);
     docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.gitlab.com
-    cd $DOCKER_CONTEXT
+    cd $DOCKER_CONTEXT || true
     docker build \
       --network host \
       -t {CI_PAGES_DOMAIN}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/$IMAGE:$TAG \

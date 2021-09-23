@@ -1,0 +1,77 @@
+##----------------------------------------------
+## Hemfile pipeline for cluster wide services
+##----------------------------------------------
+---
+include:
+  - project: 'training-gitops/pipeline'
+    ref: master
+    file: 'helm/helmfile.yaml'
+  - project: 'training-gitops/pipeline'
+    ref: master
+    file: 'environments.yaml'
+  - project: 'training-gitops/pipeline'
+    ref: master
+    file: 'linters/yamllint.yaml'
+
+stages:
+  - yaml-lint
+  - helm-diff
+  - helm-sync
+
+variables:
+  YAMLLINT_OPTIONS: ""
+
+##-------------------------
+## Project linting
+##-------------------------
+yaml-lint:
+  image: python:3.7-alpine
+  stage: yaml-lint
+  extends:
+    .yamllint
+
+##-------------------------
+## prod environment
+##-------------------------
+helm-diff-prod:
+  extends:
+    - .helm-diff
+    - .env-prod
+  stage: prod-diff
+  environment:
+    name: "prod"
+
+helm-sync-prod:
+  extends:
+    - .helm-sync
+    - .env-prod
+  stage: helm-sync
+  environment:
+    name: "prod"
+  only:
+    - master
+  when:
+    manual
+
+##-------------------------
+## dev environment
+##-------------------------
+helm-diff-dev:
+  extends:
+    - .helm-diff
+    - .env-dev
+  stage: helm-diff
+  environment:
+    name: "dev"
+
+helm-sync-dev:
+  extends:
+    - .helm-sync
+    - .env-dev
+  stage: helm-sync
+  environment:
+    name: "dev"
+  only:
+    - master
+  when:
+    manual

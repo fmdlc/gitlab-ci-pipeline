@@ -12,4 +12,5 @@ variables:
   DOCKER_LINT_IGNORE: "--ignore DL3013 --ignore DL3018 --ignore DL3000 --ignore DL3059"
   GITLAB_URI: https://gitlab.com/training-gitops/"
   GIT_STRATEGY: fetch
+  INFRA_IMAGE: "registry.gitlab.com/training-gitops/microservices/microservices-demo/infra-image:latest"
   YAMLLINT_OPTIONS: ""
