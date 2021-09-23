@@ -19,16 +19,17 @@ services:
     - until docker info; do sleep 2; done
   script: |-
     set -eu pipefail;
-    export TAG=$(cat ./tag);
-    docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD registry.gitlab.com
+    export TAG=$(cat ./tag);{
+    docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     cd $DOCKER_CONTEXT
     docker build \
       --network host \
-      -t ${CI_PAGES_DOMAIN}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/$IMAGE:$TAG \
-      -t ${CI_PAGES_DOMAIN}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/$IMAGE:latest .
+      -t ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${IMAGE}:${TAG} \
+      -t ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${IMAGE}:latest .
     echo "=> Pushing image $IMAGE:$TAG (latest)"
-    docker push ${GITLAB_CI_USER}:${GITLAB_CI_TOKEN}@${CI_PAGES_DOMAIN}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/$IMAGE:$TAG
-    docker push ${GITLAB_CI_USER}:${GITLAB_CI_TOKEN}@${CI_PAGES_DOMAIN}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/$IMAGE:$latest
+    
+    docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${IMAGE}:${TAG}
+    docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${IMAGE}:$latest
     echo "=> Done"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
