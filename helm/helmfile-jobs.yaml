@@ -4,13 +4,13 @@
 ---
 include:
   - project: 'training-gitops/pipeline'
-    ref: master
+    ref: main
     file: 'helm/helmfile.yaml'
   - project: 'training-gitops/pipeline'
-    ref: master
+    ref: main
     file: 'environments.yaml'
   - project: 'training-gitops/pipeline'
-    ref: master
+    ref: main
     file: 'linters/yamllint.yaml'
 
 stages:
