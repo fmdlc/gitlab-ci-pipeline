@@ -32,5 +32,5 @@ variables:
   allow_failure: false
   stage: helm-sync
   script:
-    - base64 -d | gpg --import
+    - base64 -d $GPG_PRIVATE_KEY | gpg --import
     - helmfile sync
