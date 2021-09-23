@@ -49,7 +49,7 @@ helm-sync-prod:
   environment:
     name: "gitops-prod"
   only:
-    - master
+    - main
   when:
     manual
 
@@ -72,6 +72,6 @@ helm-sync-dev:
   environment:
     name: "gitops-dev"
   only:
-    - master
+    - main
   when:
     manual
