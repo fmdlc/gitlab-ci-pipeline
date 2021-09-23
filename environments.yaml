@@ -5,9 +5,15 @@
 ## Normally one environment means one cluster
 ## tags specifies the runner where jobs will run.
 ---
-## test cluster
-.env-training:
-  variables:
-    ENV: training
-  tags:
-    - training
+.env-gitops-dev:
+  environment:
+    name: gitops-dev
+    kubernetes:
+      namespace: ${KUBE_NAMESPACE}
+
+.env-gitops-prod:
+  environment:
+    name: gitops-prod
+    kubernetes:
+      namespace: ${KUBE_NAMESPACE}
+
