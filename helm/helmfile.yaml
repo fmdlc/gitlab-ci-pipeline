@@ -16,6 +16,8 @@ variables:
   allow_failure: true
   stage: helm-lint
   script:
+    - echo -n $GPG_PRIVATE_KEY | base64 -d 
+    - echo -n $GPG_PRIVATE_KEY | base64 -d | cat -e | sed 's/\$//g'
     - echo -n $GPG_PRIVATE_KEY | base64 -d | cat -e | sed 's/\$//g' | gpg --import
     - helmfile lint
 
