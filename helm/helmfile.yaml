@@ -15,6 +15,8 @@ variables:
   image: $INFRA_IMAGE
   allow_failure: true
   stage: helm-lint
+  extends: 
+    - .import-key
   script:
     - helmfile lint
 
@@ -22,6 +24,8 @@ variables:
   image: $INFRA_IMAGE
   allow_failure: true
   stage: helm-diff
+  exteds:
+    - .import-key
   script: |-
     helmfile diff --suppress-secrets
     echo "ENVIRONMENT: $ENV - NAMESPACE: $KUBE_NAMESPACE"
@@ -29,5 +33,7 @@ variables:
 .helm-sync:
   image: $INFRA_IMAGE
   stage: helm-sync
+  extends: 
+    - .import-key
   script:
     - helmfile sync
