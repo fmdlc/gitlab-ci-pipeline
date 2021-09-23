@@ -36,18 +36,18 @@ yaml-lint:
 helm-diff-prod:
   extends:
     - .helm-diff
-    - .env-prod
+    - .env-gitops-prod
   stage: prod-diff
   environment:
-    name: "prod"
+    name: "gitops-prod"
 
 helm-sync-prod:
   extends:
     - .helm-sync
-    - .env-prod
+    - .env-gitops-prod
   stage: helm-sync
   environment:
-    name: "prod"
+    name: "gitops-prod"
   only:
     - master
   when:
@@ -59,18 +59,18 @@ helm-sync-prod:
 helm-diff-dev:
   extends:
     - .helm-diff
-    - .env-dev
+    - .env-gitops-dev
   stage: helm-diff
   environment:
-    name: "dev"
+    name: "gitops-dev"
 
 helm-sync-dev:
   extends:
     - .helm-sync
-    - .env-dev
+    - .env-gitops-dev
   stage: helm-sync
   environment:
-    name: "dev"
+    name: "gitops-dev"
   only:
     - master
   when:
