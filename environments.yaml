@@ -10,10 +10,13 @@
     name: gitops-dev
     kubernetes:
       namespace: ${KUBE_NAMESPACE}
+  variables:
+    ENV: "dev"
 
 .env-gitops-prod:
   environment:
     name: gitops-prod
     kubernetes:
       namespace: ${KUBE_NAMESPACE}
-
+  variables:
+    ENV: "prod"
