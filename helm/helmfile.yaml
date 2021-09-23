@@ -16,7 +16,9 @@ variables:
   allow_failure: true
   stage: helm-lint
   script:
+    - sops --version
     - echo -e $GPG_PRIVATE_KEY | gpg --import
+    - gpg --list-keys
     - helmfile lint
 
 .helm-diff:
