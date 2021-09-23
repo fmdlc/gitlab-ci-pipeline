@@ -16,9 +16,7 @@ variables:
   allow_failure: true
   stage: helm-lint
   script:
-    - echo -e $GPG_PRIVATE_KEY
-    - echo -e $GPG_PRIVATE_KEY | base64 -d
-    - echo -e $GPG_PRIVATE_KEY | base64 -d | gpg --import
+    - echo $GPG_PRIVATE_KEY | base64 -d | sed 's/\n//g' | gpg --import
     - helmfile lint
 
 .helm-diff:
@@ -26,7 +24,7 @@ variables:
   allow_failure: false
   stage: helm-diff
   script: |-
-    echo -e $GPG_PRIVATE_KEY | base64 -d | gpg --import
+    echo $GPG_PRIVATE_KEY | base64 -d | sed 's/\n//g' | gpg --import
     helmfile diff --suppress-secrets
     echo "ENVIRONMENT: $ENV - NAMESPACE: $KUBE_NAMESPACE"
 
@@ -35,5 +33,5 @@ variables:
   allow_failure: false
   stage: helm-sync
   script:
-    - echo =e $GPG_PRIVATE_KEY | base64 -d | gpg --import
+    - echo $GPG_PRIVATE_KEY | base64 -d | sed 's/\n//g' | gpg --import
     - helmfile sync
