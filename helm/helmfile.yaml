@@ -16,7 +16,10 @@ variables:
   allow_failure: true
   stage: helm-lint
   script:
+    - gpg --version
+    - sops --version
     - base64 -d $GPG_PRIVATE_KEY | gpg --import
+    - sops --verbose -d values.d/gitlab-runner/dev/secrets.yaml
     - helmfile lint
 
 .helm-diff:
