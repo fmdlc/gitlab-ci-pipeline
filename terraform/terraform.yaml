@@ -30,4 +30,4 @@ variables:
   allow_failure: false
   stage: terraform-apply
   script:
-    - terraform plan -auto-approve "state.plan"
+    - terraform apply -auto-approve "state.plan"

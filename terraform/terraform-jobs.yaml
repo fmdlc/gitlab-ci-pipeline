@@ -51,7 +51,7 @@ terraform-apply-prod:
 ##-------------------------
 terraform-init-dev:
   extends:
-    - .terraform-lint
+    - .terraform-init
     - .env-gitops-dev
   stage: terraform-init
   environment:
