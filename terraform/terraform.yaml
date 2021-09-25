@@ -11,10 +11,8 @@
       - .terraform
       - /root/.terraform.d/credentials.tfrc.jso
   before_script:
-    - rm -rf .terraform
-    - mkdir /root/.terraform.d/
+    - rm -rf .terraform && mkdir /root/.terraform.d/
     - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
-    - terraform login
   script:
     - terraform init -backend-config=./vars/$ENV/backend.tf
 
