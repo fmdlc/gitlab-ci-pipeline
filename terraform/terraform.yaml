@@ -9,11 +9,10 @@
   artifacts:
     paths:
       - .terraform
-      - /root/.terraform.d/credentials.tfrc.json
   before_script:
     - rm -rf .terraform && mkdir /root/.terraform.d/
-    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
   script:
+    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform init -backend-config=./vars/$ENV/backend.tf
 
 .terraform-plan:
@@ -24,6 +23,7 @@
     paths:
       - state-$CI_JOB_ID.plan
   script:
+    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform plan -out=state-$CI_JOB_ID.plan -var-file=./vars/$ENV/terraform.tfvars
 
 .terraform-apply:
@@ -31,4 +31,5 @@
   allow_failure: false
   stage: terraform-apply
   script:
+    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform apply -auto-approve "state-$CI_JOB_ID.plan"
