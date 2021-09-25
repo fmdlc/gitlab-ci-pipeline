@@ -1,0 +1,33 @@
+##----------------------------------------------
+## Terraform pipeline
+##----------------------------------------------
+---
+variables:
+  ENV: $ENVIRONMENT
+  PROJECT_NAME: ${CI_PROJECT_NAME}
+
+.tf-init:
+  image: $TF_IMAGE
+  allow_failure: true
+  stage: terraform-lint
+  artifacts:
+    paths:
+      - .terraform
+  script:
+    - terraform init
+
+.tf-plan:
+  image: $TF_IMAGE
+  allow_failure: false
+  stage: terraform-plan
+  artifacts:
+    - state.plan
+  script:
+    - terraform plan -out=state.plan
+
+.tf-apply:
+  image: $TF_IMAGE
+  allow_failure: false
+  stage: terraform-apply
+  script:
+    - terraform plan -auto-approve "state.plan"

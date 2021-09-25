@@ -1,0 +1,80 @@
+##----------------------------------------------
+## Hemfile pipeline for cluster wide services
+##----------------------------------------------
+---
+include:
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'terraform/terraform.yaml'
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'environments.yaml'
+
+stages:
+  - terraform-init
+  - terraform-plan
+  - terraform-apply
+
+##-------------------------
+## prod environment
+##-------------------------
+terraform-init-prod:
+  extends:
+    - .terraform-lint
+    - .env-gitops-prod
+  stage: terraform-init
+  environment:
+    name: "gitops-prod"
+
+terraform-plan-prod:
+  extends:
+    - .terraform-plan
+    - .env-gitops-prod
+  stage: terraform-plan
+  environment:
+    name: "gitops-prod"
+
+terraform-apply-prod:
+  extends:
+    - .terraform-apply
+    - .env-gitops-prod
+  stage: terraform-apply
+  environment:
+    name: "gitops-prod"
+  only:
+    - main
+  when:
+    manual
+
+##-------------------------
+## dev environment
+##-------------------------
+terraform-init-dev:
+  extends:
+    - .terraform-lint
+    - .env-gitops-dev
+  stage: terraform-init
+  environment:
+    name: "gitops-dev"
+
+terraform-plan-dev:
+  extends:
+    - .terraform-plan
+    - .env-gitops-dev
+  stage: terraform-plan
+  environment:
+    name: "gitops-dev"
+
+terraform-apply-dev:
+  extends:
+    - .terraform-apply
+    - .env-gitops-dev
+  stage: terraform-apply
+  environment:
+    name: "gitops-dev"
+  only:
+    - main
+  when:
+    manual
+
+
