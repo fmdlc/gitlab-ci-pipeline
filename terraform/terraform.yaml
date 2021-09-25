@@ -9,7 +9,7 @@
   artifacts:
     paths:
       - .terraform
-      - /root/.terraform.d/credentials.tfrc.jso
+      - /root/.terraform.d/credentials.tfrc.json
   before_script:
     - rm -rf .terraform && mkdir /root/.terraform.d/
     - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
