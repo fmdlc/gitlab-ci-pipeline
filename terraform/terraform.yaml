@@ -9,7 +9,7 @@
   artifacts:
     paths:
       - .terraform
-  pre_script:
+  before_script:
     - rm -rf .terraform
   script:
     - terraform init
