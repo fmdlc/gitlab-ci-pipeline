@@ -1,0 +1,19 @@
+##----------------------------------------------
+## Microservices Docker Image pipeline
+##----------------------------------------------
+# In order to preserve SHA between builds, we use DinD
+include:
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'variables.yaml'
+
+stages:
+    - deploy
+    
+.deploy_app:
+  image: $INFRA_IMAGE
+  stage: deploy
+  allow_failure: true
+  script:
+    - apk add curl
+    - curl -X POST -F token=${APP_TOKEN} -F ref=main https://gitlab.com/api/v4/projects/${APP_ID}/trigger/pipeline
