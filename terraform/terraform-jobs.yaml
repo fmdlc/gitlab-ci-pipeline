@@ -20,7 +20,7 @@ stages:
 ##-------------------------
 terraform-init-prod:
   extends:
-    - .terraform-lint
+    - .terraform-init
     - .env-gitops-prod
   stage: terraform-init
   environment:

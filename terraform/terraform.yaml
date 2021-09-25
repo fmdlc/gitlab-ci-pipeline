@@ -9,7 +9,7 @@ variables:
 .tf-init:
   image: $TF_IMAGE
   allow_failure: true
-  stage: terraform-lint
+  stage: terraform-init
   artifacts:
     paths:
       - .terraform
