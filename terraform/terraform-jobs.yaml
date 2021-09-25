@@ -18,7 +18,7 @@ stages:
 ##-------------------------
 ## prod environment
 ##-------------------------
-terraform-init-prod:
+terraform-init:
   extends:
     - .terraform-init
     - .env-gitops-prod
@@ -26,7 +26,7 @@ terraform-init-prod:
   environment:
     name: "gitops-prod"
 
-terraform-plan-prod:
+terraform-plan:
   extends:
     - .terraform-plan
     - .env-gitops-prod
@@ -34,44 +34,13 @@ terraform-plan-prod:
   environment:
     name: "gitops-prod"
 
-terraform-apply-prod:
+terraform-apply:
   extends:
     - .terraform-apply
     - .env-gitops-prod
   stage: terraform-apply
   environment:
     name: "gitops-prod"
-  only:
-    - main
-  when:
-    manual
-
-##-------------------------
-## dev environment
-##-------------------------
-terraform-init-dev:
-  extends:
-    - .terraform-init
-    - .env-gitops-dev
-  stage: terraform-init
-  environment:
-    name: "gitops-dev"
-
-terraform-plan-dev:
-  extends:
-    - .terraform-plan
-    - .env-gitops-dev
-  stage: terraform-plan
-  environment:
-    name: "gitops-dev"
-
-terraform-apply-dev:
-  extends:
-    - .terraform-apply
-    - .env-gitops-dev
-  stage: terraform-apply
-  environment:
-    name: "gitops-dev"
   only:
     - main
   when:
