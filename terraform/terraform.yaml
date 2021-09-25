@@ -9,8 +9,10 @@
   artifacts:
     paths:
       - .terraform
+      - /root/.terraform.d/credentials.tfrc.jso
   before_script:
     - rm -rf .terraform
+    - mkdir /root/.terraform.d/
     - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform login
   script:
@@ -22,7 +24,7 @@
   stage: terraform-plan
   artifacts:
     paths:
-      - state.plan
+      - state-$CI_JOB_ID.plan
   script:
     - terraform plan -out=state-$CI_JOB_ID.plan -var-file=./vars/$ENV/terraform.tfvars
 
