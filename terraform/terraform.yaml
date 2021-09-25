@@ -2,13 +2,17 @@
 ## Terraform pipeline
 ##----------------------------------------------
 ---
-variables:
-  ENV: $ENVIRONMENT
-  PROJECT_NAME: ${CI_PROJECT_NAME}
+image:
+  name: ${TF_IMAGE}
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+before_script:
+  - rm -rf .terraform
 
 .terraform-init:
-  image: $TF_IMAGE
-  allow_failure: true
+  allow_failure: false
   stage: terraform-init
   artifacts:
     paths:
@@ -17,7 +21,6 @@ variables:
     - terraform init
 
 .terraform-plan:
-  image: $TF_IMAGE
   allow_failure: false
   stage: terraform-plan
   artifacts:
@@ -27,7 +30,6 @@ variables:
     - terraform plan -out=state.plan
 
 .terraform-apply:
-  image: $TF_IMAGE
   allow_failure: false
   stage: terraform-apply
   script:
