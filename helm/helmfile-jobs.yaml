@@ -57,10 +57,10 @@ helm-sync-prod:
   stage: helm-sync
   environment:
     name: "gitops-prod"
-  only:
-    - main
-  when:
-    manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "trigger"
+      when: always
+    - when: manual
 
 ##-------------------------
 ## dev environment
@@ -88,8 +88,6 @@ helm-sync-dev:
   stage: helm-sync
   environment:
     name: "gitops-dev"
-  only:
-    - main
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "trigger"
       when: always
