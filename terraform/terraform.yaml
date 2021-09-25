@@ -21,7 +21,8 @@ variables:
   allow_failure: false
   stage: terraform-plan
   artifacts:
-    - state.plan
+    path:
+      - state.plan
   script:
     - terraform plan -out=state.plan
 
