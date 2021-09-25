@@ -2,25 +2,20 @@
 ## Terraform pipeline
 ##----------------------------------------------
 ---
-image:
-  name: ${TF_IMAGE}
-  entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-
-before_script:
-  - rm -rf .terraform
-
 .terraform-init:
+  image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-init
   artifacts:
     paths:
       - .terraform
+  pre_script:
+    - rm -rf .terraform
   script:
     - terraform init
 
 .terraform-plan:
+  image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-plan
   artifacts:
@@ -30,6 +25,7 @@ before_script:
     - terraform plan -out=state-$CI_JOB_ID.plan
 
 .terraform-apply:
+  image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-apply
   script:
