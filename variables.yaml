@@ -13,6 +13,5 @@ variables:
   GITLAB_URI: https://gitlab.com/training-gitops/"
   GIT_STRATEGY: fetch
   INFRA_IMAGE: "registry.gitlab.com/training-gitops/kubernetes-infra/infra-image/infra-image:latest"
-  #TF_IMAGE: "docker.io/hashicorp/terraform:1.0.7"
-  TF_IMAGE: "registry.gitlab.com/training-gitops/kubernetes-infra/infra-image/infra-image:latest"
+  TF_IMAGE: "docker.io/hashicorp/terraform:1.0.7"
   YAMLLINT_OPTIONS: ""
