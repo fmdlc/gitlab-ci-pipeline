@@ -27,10 +27,10 @@ before_script:
     paths:
       - state.plan
   script:
-    - terraform plan -out=state.plan
+    - terraform plan -out=state-$CI_JOB_ID.plan
 
 .terraform-apply:
   allow_failure: false
   stage: terraform-apply
   script:
-    - terraform apply -auto-approve "state.plan"
+    - terraform apply -auto-approve "state-$CI_JOB_ID.plan"
