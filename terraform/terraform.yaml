@@ -12,7 +12,7 @@
   before_script:
     - rm -rf .terraform
   script:
-    - terraform init
+    - terraform init -backend-config=./vars/$ENV/backend.tf
 
 .terraform-plan:
   image: docker.io/hashicorp/terraform:1.0.7
@@ -22,7 +22,7 @@
     paths:
       - state.plan
   script:
-    - terraform plan -out=state-$CI_JOB_ID.plan
+    - terraform plan -out=state-$CI_JOB_ID.plan -var-file=./vars/$ENV/terraform.tfvars
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform:1.0.7
