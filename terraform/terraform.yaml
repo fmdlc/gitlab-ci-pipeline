@@ -16,14 +16,15 @@ workflow:
   before_script:
     - rm -rf ${TF_ROOT}/.terraform
     - rm -rf ${TF_ROOT}/.terraform.lock.hcl
-    - mkdir /root/.terraform.d/ 
   script:
+    - base64 -d ${TF_CONFIG} > ${TF_ROOT}/.terraformrc
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform plan -out=state.tfplan -var-file=./vars/$ENV/terraform.tfvars
   artifacts:
     name: ${ENV}
     expire_in: 2 hours
     paths: 
+      - ${TF_ROOT}/.terraformrc
       - ${TF_ROOT}/.terraform
       - ${TF_ROOT}/state.tfplan
 
