@@ -27,7 +27,7 @@ workflow:
       - /root/.terraform.d/credentials.tfrc.json
       - ${TF_ROOT}/.terraform
       - ${TF_ROOT}/.teraform.lock.hcl
-      - ${TF_ROOT}/state-plan.plan
+      - ${TF_ROOT}/state-${ENV}.plan
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform:1.0.7
