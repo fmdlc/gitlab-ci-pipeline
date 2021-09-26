@@ -1,16 +1,7 @@
 ##----------------------------------------------
 ## Terraform pipeline
 ##----------------------------------------------
----
-workflow:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == null || $CI_COMMIT_BRANCH == ""'
-      when: never
-    - when: always
-
-variables:
-  ENV: ${env}            
-
+---         
 .terraform-plan:
   image: docker.io/hashicorp/terraform
   allow_failure: false
@@ -20,22 +11,24 @@ variables:
     - rm -rf ${TF_ROOT}/.terraform
     - rm -rf ${TF_ROOT}/.terraform.lock.hcl
   script:
+    - echo "ENVIRONMENT ${ENV}"
     - base64 -d ${TF_CONFIG} > ${HOME}/.terraformrc
     - terraform init -backend=true -backend-config=./vars/${ENV}/backend.tf
-    - terraform plan -out=state.tfplan -var-file=./vars/${ENV}/terraform.tfvars
+    - terraform plan -out=state-${ENV}.tfplan -var-file=./vars/${ENV}/terraform.tfvars
   artifacts:
     name: ${ENV}
     expire_in: 2 hours
     paths: 
       - .terraform
       - .terraform.lock.hcl
-      - state.tfplan
+      - state-${ENV}.tfplan
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform
   allow_failure: false
   stage: terraform-apply
   script:
+    - echo "ENVIRONMENT ${ENV}"
     - base64 -d ${TF_CONFIG} > ${HOME}/.terraformrc
-    - terraform apply -auto-approve "state.tfplan"
+    - terraform apply -auto-approve "state-${ENV}.tfplan"
   when: manual

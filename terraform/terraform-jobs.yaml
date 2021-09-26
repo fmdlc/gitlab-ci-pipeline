@@ -32,8 +32,6 @@ terraform-plan-dev:
   stage: terraform-plan
   environment:
     name: "gitops-dev"
-  variables:
-    env: "dev"
 
 terraform-apply-dev:
   extends:
@@ -42,8 +40,6 @@ terraform-apply-dev:
   stage: terraform-apply
   environment:
     name: "gitops-dev"
-  variables:
-    env: "dev"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "trigger"
       when: always
@@ -59,8 +55,6 @@ terraform-plan-prod:
   stage: terraform-plan
   environment:
     name: "gitops-prod"
-  variables:
-    env: "prod"
 
 terraform-apply-prod:
   extends:
@@ -69,8 +63,6 @@ terraform-apply-prod:
   stage: terraform-apply
   environment:
     name: "gitops-prod"
-  variables:
-    env: "prod"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "trigger"
       when: always
