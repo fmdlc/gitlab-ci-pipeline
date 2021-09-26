@@ -18,7 +18,6 @@ workflow:
     - rm -rf ${TF_ROOT}/.terraform.lock.hcl
     - mkdir /root/.terraform.d/ 
   script:
-    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform plan -out=state.tfplan -var-file=./vars/$ENV/terraform.tfvars
   artifacts:
@@ -27,9 +26,6 @@ workflow:
     paths: 
       - ${TF_ROOT}/.terraform
       - ${TF_ROOT}/state.tfplan
-      - /root/.terraform.d/credentials.tfrc.json
-      - /root/.terraform.d/checkpoint_signature
-      - /root/.terraform.d/checkpoint_cache
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform
