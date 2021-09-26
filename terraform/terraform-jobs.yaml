@@ -44,8 +44,10 @@ terraform-apply-dev:
     name: "gitops-dev"
   variables:
     env: "dev"
-  when:
-    manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "trigger"
+      when: always
+    - when: manual
 
 ##-------------------------
 ## prod environment
@@ -69,6 +71,7 @@ terraform-apply-prod:
     name: "gitops-prod"
   variables:
     env: "prod"
-  when:
-    manual
-  
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "trigger"
+      when: always
+    - when: manual
