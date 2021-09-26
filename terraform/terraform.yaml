@@ -27,7 +27,9 @@ workflow:
     paths: 
       - ${TF_ROOT}/.terraform
       - ${TF_ROOT}/state.tfplan
-      - /root/.terraform.d/
+      - /root/.terraform.d/credentials.tfrc.json
+      - /root/.terraform.d/checkpoint_signature
+      - /root/.terraform.d/checkpoint_cache
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform
