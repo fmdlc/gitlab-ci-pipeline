@@ -40,8 +40,6 @@ terraform-apply-dev:
   stage: terraform-apply
   environment:
     name: "gitops-dev"
-  only:
-    - main
   when:
     manual
 
@@ -63,8 +61,6 @@ terraform-apply-prod:
   stage: terraform-apply
   environment:
     name: "gitops-prod"
-  only:
-    - main
   when:
     manual
   

@@ -13,24 +13,22 @@ workflow:
   allow_failure: false
   stage: terraform-plan
   script:
-    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
+    - mkdir /root/.terraform.d/ && base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform validate
     - terraform plan -out=state-plan.plan -var-file=./vars/$ENV/terraform.tfvars
   artifacts:
     expire_in: 4 hours
     paths: 
-      - .terraform
-      - .teraform.lock.hcl
-      - state-plan.plan
+      - ${TF_ROOT}/.terraform
+      - ${TF_ROOT}/.teraform.lock.hcl
+      - ${TF_ROOT}/state-plan.plan
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-apply
   script:
-    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
+    - mkdir /root/.terraform.d/ && base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform apply -auto-approve "state-plaln.plan"
-  rules:
-    - if: '$CI_COMMIT_BRANCH'
-      when: manual
+  when: manual
