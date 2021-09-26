@@ -19,7 +19,6 @@ workflow:
     - mkdir /root/.terraform.d/ 
   script:
     - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
-    - terraform validate
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform plan -out=state.tfplan -var-file=./vars/$ENV/terraform.tfvars
   artifacts:
