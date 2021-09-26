@@ -22,6 +22,7 @@ workflow:
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform validate
     - terraform plan -out=state.plan -var-file=./vars/$ENV/terraform.tfvars
+    - terraform apply -auto-approve "state.plan"
   artifacts:
     expire_in: 4 hours
     paths: 
