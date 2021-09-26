@@ -31,6 +31,7 @@ workflow:
       - state.plan
 
 .terraform-apply:
+  image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-apply
   script:
