@@ -11,21 +11,20 @@ include:
     file: 'environments.yaml'
 
 stages:
-  - terraform-init
   - terraform-plan
   - terraform-apply
 
-##-------------------------
-## prod environment
-##-------------------------
-terraform-init-dev:
-  extends:
-    - .terraform-init
-    - .env-gitops-dev
-  stage: terraform-init
-  environment:
-    name: "gitops-dev"
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR} 
 
+cache:
+  key: "${TF_ROOT}"
+  paths:
+    - ${TF_ROOT}/.terraform/
+
+##-------------------------
+## dev environment
+##-------------------------
 terraform-plan-dev:
   extends:
     - .terraform-plan
@@ -49,14 +48,6 @@ terraform-apply-dev:
 ##-------------------------
 ## prod environment
 ##-------------------------
-terraform-init-prod:
-  extends:
-    - .terraform-init
-    - .env-gitops-prod
-  stage: terraform-init
-  environment:
-    name: "gitops-prod"
-
 terraform-plan-prod:
   extends:
     - .terraform-plan

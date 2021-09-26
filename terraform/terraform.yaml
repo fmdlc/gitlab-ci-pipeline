@@ -2,36 +2,35 @@
 ## Terraform pipeline
 ##----------------------------------------------
 ---
-.terraform-init:
-  image: docker.io/hashicorp/terraform:1.0.7
-  allow_failure: false
-  stage: terraform-init
-  artifacts:
-    paths:
-      - .terraform
-  before_script: &setup_tf
-    - mkdir /root/.terraform.d/
-  script:
-    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
-    - terraform init -backend-config=./vars/$ENV/backend.tf
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == null || $CI_COMMIT_BRANCH == ""'
+      when: never
+    - when: always
 
 .terraform-plan:
   image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-plan
-  artifacts:
-    paths:
-      - state-$CI_JOB_ID.plan
-  before_script: *setup_tf
   script:
     - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
-    - terraform plan -out=state-$CI_JOB_ID.plan -var-file=./vars/$ENV/terraform.tfvars
+    - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
+    - terraform validate
+    - terraform plan -out=state-plan.plan -var-file=./vars/$ENV/terraform.tfvars
+  artifacts:
+    expire_in: 4 hours
+    paths: 
+      - .terraform
+      - .teraform.lock.hcl
+      - state-plan.plan
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-apply
-  before_script: *setup_tf
   script:
     - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
-    - terraform apply -auto-approve "state-$CI_JOB_ID.plan"
+    - terraform apply -auto-approve "state-plaln.plan"
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      when: manual
