@@ -32,6 +32,8 @@ terraform-plan-dev:
   stage: terraform-plan
   environment:
     name: "gitops-dev"
+  when:
+    manual
 
 terraform-apply-dev:
   extends:
@@ -53,6 +55,8 @@ terraform-plan-prod:
   stage: terraform-plan
   environment:
     name: "gitops-prod"
+  when:
+    manual
 
 terraform-apply-prod:
   extends:
