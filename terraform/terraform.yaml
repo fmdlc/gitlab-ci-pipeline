@@ -21,19 +21,18 @@ workflow:
     - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform validate
-    - terraform plan -out=state-${ENV}.plan -var-file=./vars/$ENV/terraform.tfvars
+    - terraform plan -out=state.plan -var-file=./vars/$ENV/terraform.tfvars
   artifacts:
     expire_in: 4 hours
     paths: 
       - /root/.terraform.d/credentials.tfrc.json
       - .terraform
       - .teraform.lock.hcl
-      - state-${ENV}.plan
+      - state.plan
 
 .terraform-apply:
-  image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-apply
   script:
-    - terraform apply -auto-approve "state-${ENV}.plan"
+    - terraform apply -auto-approve "state.plan"
   when: manual
