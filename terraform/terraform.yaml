@@ -18,6 +18,7 @@ workflow:
     - rm -rf ${TF_ROOT}/.terraform.lock.hcl
   script:
     - base64 -d ${TF_CONFIG} > ${HOME}/.terraform.rc
+    - ls -al ${HOME}
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform plan -out=state.tfplan -var-file=./vars/$ENV/terraform.tfvars
   artifacts:
@@ -33,5 +34,6 @@ workflow:
   allow_failure: false
   stage: terraform-apply
   script:
+    - ls -al ${HOME}
     - terraform apply -auto-approve "state.tfplan"
   when: manual
