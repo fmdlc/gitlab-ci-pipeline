@@ -12,6 +12,7 @@ workflow:
   image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-plan
+  resource_group: "${ENV}"
   before_script:
     - rm -rf ${TF_ROOT}/.terraform
     - rm -rf ${TF_ROOT}/.terraform.lock.hcl
@@ -25,9 +26,9 @@ workflow:
     expire_in: 4 hours
     paths: 
       - /root/.terraform.d/credentials.tfrc.json
-      - ${TF_ROOT}/.terraform
-      - ${TF_ROOT}/.teraform.lock.hcl
-      - ${TF_ROOT}/state-${ENV}.plan
+      - .terraform
+      - .teraform.lock.hcl
+      - state-${ENV}.plan
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform:1.0.7
