@@ -31,6 +31,7 @@ terraform-plan-dev:
     - .env-gitops-dev
   stage: terraform-plan
   environment:
+    env: dev
     name: "gitops-dev"
 
 terraform-apply-dev:
@@ -40,6 +41,7 @@ terraform-apply-dev:
   stage: terraform-apply
   environment:
     name: "gitops-dev"
+    env: dev
   when:
     manual
 
@@ -53,6 +55,7 @@ terraform-plan-prod:
   stage: terraform-plan
   environment:
     name: "gitops-prod"
+    env: prod
 
 terraform-apply-prod:
   extends:
@@ -61,6 +64,7 @@ terraform-apply-prod:
   stage: terraform-apply
   environment:
     name: "gitops-prod"
+    env: prod
   when:
     manual
   
