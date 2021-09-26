@@ -22,11 +22,9 @@ workflow:
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform validate
     - terraform plan -out=state.plan -var-file=./vars/$ENV/terraform.tfvars
-    - terraform apply -auto-approve "state.plan"
   artifacts:
-    expire_in: 4 hours
+    expire_in: 2 hours
     paths: 
-      - /root/.terraform.d/credentials.tfrc.json
       - .terraform
       - .teraform.lock.hcl
       - state.plan
@@ -36,5 +34,6 @@ workflow:
   allow_failure: false
   stage: terraform-apply
   script:
+    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform apply -auto-approve "state.plan"
   when: manual
