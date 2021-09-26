@@ -26,8 +26,8 @@ workflow:
     expire_in: 2 hours
     paths: 
       - ${TF_ROOT}/.terraform
-      - ${TF_ROOT}./*.tfplan
-      - /root/.terraform.d
+      - ${TF_ROOT}/state.tfplan
+      - /root/.terraform.d/
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform
