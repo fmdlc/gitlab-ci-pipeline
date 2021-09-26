@@ -28,14 +28,12 @@ workflow:
       - .terraform
       - .teraform.lock.hcl
       - state.plan
+      - /root/.terraform.d/credentials.tfrc.json
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform:1.0.7
   allow_failure: false
   stage: terraform-apply
-  before_script:
-    - mkdir /root/.terraform.d/ 
   script:
-    - base64 -d $TF_CONFIG > /root/.terraform.d/credentials.tfrc.json
     - terraform apply -auto-approve "state.plan"
   when: manual
