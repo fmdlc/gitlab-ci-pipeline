@@ -31,4 +31,3 @@
     - echo "ENVIRONMENT ${ENV}"
     - base64 -d ${TF_CONFIG} > ${HOME}/.terraformrc
     - terraform apply -auto-approve "state-${ENV}.tfplan"
-  when: manual
