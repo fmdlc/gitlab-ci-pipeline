@@ -11,7 +11,6 @@
     - rm -rf ${TF_ROOT}/.terraform
     - rm -rf ${TF_ROOT}/.terraform.lock.hcl
   script:
-    - echo "ENVIRONMENT ${ENV}"
     - base64 -d ${TF_CONFIG} > ${HOME}/.terraformrc
     - terraform init -backend=true -backend-config=./vars/${ENV}/backend.tf
     - terraform plan -out=state-${ENV}.tfplan -var-file=./vars/${ENV}/terraform.tfvars
@@ -28,6 +27,5 @@
   allow_failure: false
   stage: terraform-apply
   script:
-    - echo "ENVIRONMENT ${ENV}"
     - base64 -d ${TF_CONFIG} > ${HOME}/.terraformrc
     - terraform apply -auto-approve "state-${ENV}.tfplan"
