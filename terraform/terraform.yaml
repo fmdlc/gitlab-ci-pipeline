@@ -20,20 +20,21 @@ workflow:
     - base64 -d ${TF_CONFIG} > ${HOME}/.terraformrc
     - terraform init -backend=true -backend-config=./vars/$ENV/backend.tf
     - terraform plan -out=state.tfplan -var-file=./vars/$ENV/terraform.tfvars
+    - ls -al
   artifacts:
     name: ${ENV}
     expire_in: 2 hours
     paths: 
-      - ${TF_ROOT}/.terraformrc
       - ${HOME}/.terraformrc
-      - ${TF_ROOT}/.terraform
-      - ${TF_ROOT}/.terraform.lock.hcl
-      - ${TF_ROOT}/state.tfplan
+      - .terraform
+      - .terraform.lock.hcl
+      - state.tfplan
 
 .terraform-apply:
   image: docker.io/hashicorp/terraform
   allow_failure: false
   stage: terraform-apply
   script:
+    - ls -al
     - terraform apply -auto-approve "state.tfplan"
   when: manual
