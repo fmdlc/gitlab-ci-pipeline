@@ -17,7 +17,7 @@ include:
    - mkdir -p /kaniko/.docker
    - export TAG=$(cat ./tag);
    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
-   - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $DOCKER_CONTEXT/Dockerfile --destination $CI_REGISTRY_IMAGE:${TAG}
+   - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKER_CONTEXT/Dockerfile --destination $CI_REGISTRY_IMAGE:${TAG}
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
       when: never
