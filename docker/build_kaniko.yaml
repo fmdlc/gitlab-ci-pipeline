@@ -1,0 +1,24 @@
+##----------------------------------------------
+## Microservices Docker Image pipeline
+##----------------------------------------------
+---
+# In order to preserve SHA between builds, we use DinD
+include:
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'variables.yaml'
+
+# Build and push the image with the specified tag
+.build:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+   - mkdir -p /kaniko/.docker
+   - export TAG=$(cat ./tag);
+   - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
+   - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $DOCKER_CONTEXT/Dockerfile --destination $CI_REGISTRY_IMAGE:${TAG}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - when: always
