@@ -1,91 +1,166 @@
-# pipeline
+# GitLab Pipeline
 
+This project includes a serie of different operations to run in a [GitLab-CI](https://gitlab.com) pipeline.
 
+## Using it
 
-## Getting started
+In order to use this pipeline, you must edit the following environment variables according to your pipeline configuration.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+The `INFRA_IMAGE` is a Docker OCI compatible imaged, pulled to a registry which is able to execute, [`Helmfile`](https://github.com/roboll/helmfile), with the `Diff` plugin.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+You can build the infra image by using the following `Dockerfile`:
 
-## Add your files
+```docker
+FROM quay.io/roboll/helmfile:helm3-v0.138.7
 
-- [ ] [Create](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+WORKDIR /
+RUN apk add --no-cache gnupg curl &&\
+  helm plugin install https://github.com/mumoshu/helm-x --version v0.8.1
 
+ENTRYPOINT ["/usr/local/bin/helmfile"]
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/training-gitops/pipeline.git
-git branch -M main
-git push -uf origin main
+
+### Editing `variables.yaml`:
+
+```yaml
+##----------------------------------------------
+## Shared variables
+##----------------------------------------------
+---
+variables:
+  # Imaged used to deploy infra services
+  DOCKER_HOST: tcp://127.0.0.1:2376
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_CERT_PATH: "/certs/client"
+  DOCKER_LINT_IGNORE: "--ignore DL3013 --ignore DL3018 --ignore DL3000 --ignore DL3059"
+  GITLAB_URI: https://gitlab.com/training-gitops/"
+  GIT_STRATEGY: fetch
+  INFRA_IMAGE: "registry.gitlab.com/training-gitops/kubernetes-infra/infra-image/infra-image:latest"
+  TF_IMAGE: "docker.io/hashicorp/terraform:1.0.7"
+  YAMLLINT_OPTIONS: ""
 ```
 
-## Integrate with your tools
+### Adding environments
 
-- [ ] [Set up project integrations](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/project/integrations/)
+The `environments.yaml` controls all managed enviromnets. We can say each environment is similar to one cluster. You can add Kubernetes Clusters in GitLab by following this [doc](https://docs.gitlab.com/ee/user/project/clusters/add_existing_cluster.html). Once the cluster is managed by GitLab it automatically is converted to an environment, update variables according to your needs.
 
-## Collaborate with your team
+```yaml
+##----------------------------------------------
+## This template contains all environments where
+## different microservices can be deployed.
+##----------------------------------------------
+## Normally one environment means one cluster
+## tags specifies the runner where jobs will run.
+---
+.env-gitops-dev:
+  environment:
+    name: gitops-dev
+    kubernetes:
+      namespace: ${KUBE_NAMESPACE}
+  variables:
+    ENV: "dev"
 
-- [ ] [Invite team members and collaborators](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Automatically merge when pipeline succeeds](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+.env-gitops-prod:
+  environment:
+    name: gitops-prod
+    kubernetes:
+      namespace: ${KUBE_NAMESPACE}
+  variables:
+    ENV: "prod"
+```
+### GPG Encryption
+If you wish to encrypt secrets using GPG you need to create a Public/Private keypair compatible with [RFC-4880](https://datatracker.ietf.org/doc/html/rfc4880). Then you have to export the armor private key and include it in a GitLab variableCre (with the file format enabled).
 
-## Test and Deploy
+For creating the Public/Private keypair please use:
+```bash
+$: gpg --full-generate-key --rfc4880
+```
+Then you have to export the generated private key and encode it using Base64:
 
-Use the built-in continuous integration in GitLab.
+```bash
+gpg --list-keys
+/Users/tty0/.gnupg/pubring.kbx
+------------------------------
+pub   rsa2048 2020-05-20 [SC] [expires: 2022-05-20]
+      95A6C65F0BC6BF647AF386866C9E5CCCF742C8CA
+uid           [ultimate] Facundo de la Cruz <fmdlc.unix@gmail.com>
+sub   rsa2048 2020-05-20 [E] [expires: 2022-05-20]
 
-- [ ] [Get started with GitLab CI/CD](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://docs.gitlab.com/ee/user/clusters/agent/)
+pub   rsa4096 2021-09-24 [SC]
+      FEC29192FE7204E670A6C10EA668AAA16DE15F67
+uid           [ultimate] GitLab CI pipeline (GitLab CI) <gitlab@ekoparty.org>
+sub   rsa4096 2021-09-24 [E]
 
-***
+$: gpg --export --armor FEC29192FE7204E670A6C10EA668AAA16DE15F67 | base64
+```
+Populate the project-wide environment variable called `GPG_PRIVATE_KEY` with the resulting output.
 
-# Editing this README
+## Using the pipeline
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://gitlab.com/-/experiment/new_project_readme_content:2d7b8bc56c9c2b85a23adc299fafddc3?https://www.makeareadme.com/) for this template.
+To build a Docker image using Kaniko, please use:
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```yam
+##------------------------------------------------------------------------------
+## Include templates
+##------------------------------------------------------------------------------
+include:
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'linters/hadolint.yaml'
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'utils/build_tag.yaml'
+  - project: 'training-gitops/pipeline'
+    ref: main
+    file: 'docker/build_kaniko.yaml'
 
-## Name
-Choose a self-explaining name for your project.
+##------------------------------------------------------------------------------
+## Variables
+##------------------------------------------------------------------------------
+variables:
+  DOCKER_LINT_IGNORE: "--ignore DL3013 --ignore DL3018 --ignore DL3000 --ignore DL3059"
+  GIT_PUSH: http://${GITLAB_CI_USER}:${GITLAB_CI_TOKEN}@${CI_PAGES_DOMAIN}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}.git
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+##------------------------------------------------------------------------------
+## Stages
+##------------------------------------------------------------------------------
+stages:
+  - lint
+  - build_tag
+  - build_image
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+##------------------------------------------------------------------------------
+## LINT
+##------------------------------------------------------------------------------
+lint:
+  stage: lint
+  extends: .docker_lint
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+##------------------------------------------------------------------------------
+## Build and push tags
+##------------------------------------------------------------------------------
+build_tag:
+  stage: build_tag
+  extends: .build_tag
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+##------------------------------------------------------------------------------
+## MicroServices
+##------------------------------------------------------------------------------
+build_adservice:
+  stage: build_image
+  extends: .build
+  variables:
+    SERVICE: "adservice"
+    IMAGE: "adservice"
+    DOCKER_CONTEXT: "./src/adservice/"
+```
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Please make sure to update tests as appropriate.
 
 ## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
-
+[MIT](https://choosealicense.com/licenses/mit/)
